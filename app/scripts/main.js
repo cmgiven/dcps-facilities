@@ -19,12 +19,11 @@
         }
     };
 
-    map = {
-        initialize: function () {
-            return;
-        }
-    };
-
     window.app = app;
+	map = {
+		initialize: function(){
+
+		} 
+	};
 
 }());
