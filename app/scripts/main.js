@@ -9,7 +9,13 @@
         map;
 
     $(function () {
+<<<<<<< HEAD
         app.initialize();
+=======
+        // Load data, call app.initialize
+		app.initialize();
+		map.initialize();
+>>>>>>> included map in javascript to display
     });
 
     app = {
