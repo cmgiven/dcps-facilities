@@ -1,0 +1,1 @@
+!function(){"use strict";var i,n;$(function(){}),i={initialize:function(){$("#loading").fadeOut(),$("#main").fadeIn()}},n={initialize:function(){}},window.app=i}();

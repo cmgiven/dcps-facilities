@@ -5,16 +5,23 @@
 (function () {
     'use strict';
 
-    var app;
+    var app,
+        map;
 
     $(function () {
-        // Load data, call app.initialize
+        app.initialize();
     });
 
     app = {
         initialize: function (data) {
             $('#loading').fadeOut();
             $('#main').fadeIn();
+        }
+    };
+
+    map = {
+        initialize: function () {
+            return;
         }
     };
 

@@ -44,29 +44,30 @@
         <form id="levels">
           <input type="radio" name="view" id="level-es" value="es" checked="checked" />
           <label for="level-es">Elementary</label>
-          <input type="radio" name="view" id="level-ms" value="ms" checked="checked" />
+          <input type="radio" name="view" id="level-ms" value="ms" />
           <label for="level-ms">Middle</label>
-          <input type="radio" name="view" id="level-hs" value="hs" checked="checked" />
+          <input type="radio" name="view" id="level-hs" value="hs" />
           <label for="level-hs">High</label>
         </form>
       </div>
-      <div id="status-filter">
-        <form id="status">
-          <input type="radio" name="status" id="status-all" checked="checked" />
-          <label for="status-all">All</label>
-          <input type="radio" name="status" id="status-completed" value="completed" />
-          <label for="status-completed">Completed</label>
-          <input type="radio" name="status" id="status-inProgress" value="inProgress" />
-          <label for="status-inProgress">In Progress</label>
-          <input type="radio" name="status" id="status-planned" value="planned" />
-          <label for="status-planned">Planned</label>
-          <input type="radio" name="status" id="status-notPlanned" value="notPlanned" />
-          <label for="status-notPlanned">No Modernization Planned</label>
-        </form>
-      </div>
-      <div id="map"></div>
-      <div id="school-view" class="school-view">
+      <div class="row">
+        <div id="map"></div>
+        <div id="status-filter">
+          <form id="status">
+            <input type="radio" name="status" id="status-all" checked="checked" />
+            <label for="status-all">All Schools</label>
+            <input type="radio" name="status" id="status-notPlanned" value="notPlanned" />
+            <label for="status-notPlanned">No Plans</label>
+            <input type="radio" name="status" id="status-planned" value="planned" />
+            <label for="status-planned">Planned</label>
+            <input type="radio" name="status" id="status-inProgress" value="inProgress" />
+            <label for="status-inProgress">In Progress</label>
+            <input type="radio" name="status" id="status-completed" value="completed" />
+            <label for="status-completed">Completed</label>
+          </form>
         </div>
+      </div>
+      <div id="school-view" class="school-view">
         <button class="close">&times;</button>
       </div>
       <div id="description">

@@ -9,8 +9,8 @@ html {
 }
 
 body {
-  background: #85959e;
-  color: #1a1e20;
+  background: #D6C9BF;
+  color: #33302D;
   font-family: 'Lato', Helvetica, Arial, sans-serif;
   font-size: 17px;
   line-height: 1.5em;
@@ -45,7 +45,7 @@ h4, h5 {
   width: 320px; height: 250px;
   padding: 0 15px;
   text-align: left;
-  color: #fff;
+  color: #33302D;
 }
 
 #main {
@@ -53,7 +53,122 @@ h4, h5 {
   position: relative;
 }
 
+header {
+  text-align: center;
+}
 
+#level-selector {
+  text-align: center;
+  input[type="radio"] {
+    display: none;
+    & + label {
+      color: #fff;
+      white-space: nowrap;
+      padding: 3px 11px;
+      margin: 0 1px;
+      background: #63605D;
+      border-radius: 5px;
+      &:hover {
+        background: #53504D;
+      }
+    }
+    &:checked + label {
+      background: #33302D;
+    }
+  }
+}
+
+.row {
+  word-wrap: none;
+  max-width: 960px;
+  margin: 44px auto;
+}
+
+.row:after, .row:before {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+#map {
+  float: left;
+  width: 67%;
+  height: 400px;
+}
+
+#status-filter {
+  width: 33%;
+  float: left;
+  padding: 16px 0 0 23px;
+
+  input[type="radio"] {
+    display: none;
+    & + label {
+      display: block;
+      position: relative;
+      font-weight: 700;
+      font-size: 22px;
+      border-left: 10px solid #B6A99F;
+      padding: 0 0 34px 20px;
+      &:last-child { padding-bottom: 0; }
+      &:hover {
+      }
+      &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        background: #B6A99F;
+        border-radius: 35px;
+        left: -23px;
+        top: -5px;
+      }
+      &:after {
+        content: "";
+        display: none;
+        position: absolute;
+        width: 23px;
+        height: 23px;
+        background: #BD6C2F;
+        border-radius: 23px;
+        left: -17px;
+        top: 1px;
+      }
+    }
+    &:checked + label {
+      &:after { display: block; }
+    }
+  }
+}
+
+.school-view {
+  background: #B6A99F;
+  color: #fff;
+  margin: 0 -13px;
+  padding: 0 24px;
+  position: relative;
+  -moz-box-shadow:    inset 0 2px 5px rgba(26, 30, 32, .5);
+  -webkit-box-shadow: inset 0 2px 5px rgba(26, 30, 32, .5);
+  box-shadow:         inset 0 2px 5px rgba(26, 30, 32, .5);
+  height: 400px;
+}
+
+button.close {
+  font-family: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 33px;
+  font-weight: 300;
+  position: absolute;
+  top: 0;
+  right: 15px;
+  cursor: pointer;
+  &:hover {
+    color: #BD6C2F;
+  }
+}
 
 
 
@@ -74,7 +189,7 @@ h4, h5 {
   font-size: 10px;
 
   & > div {
-    background-color: #ddd;
+    background-color: #B6A99F;
     height: 100%;
     width: 3px;
     display: inline-block;
