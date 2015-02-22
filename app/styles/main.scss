@@ -9,7 +9,7 @@ html {
 }
 
 body {
-  background: #D6C9BF;
+  background: #E7E5E2;
   color: #33302D;
   font-family: 'Lato', Helvetica, Arial, sans-serif;
   font-size: 17px;
@@ -66,14 +66,14 @@ header {
       white-space: nowrap;
       padding: 3px 11px;
       margin: 0 1px;
-      background: #63605D;
+      background: #5076BA;
       border-radius: 5px;
       &:hover {
-        background: #53504D;
+        background: #4066AA;
       }
     }
     &:checked + label {
-      background: #33302D;
+      background: #20468A;
     }
   }
 }
@@ -108,7 +108,7 @@ header {
       position: relative;
       font-weight: 700;
       font-size: 22px;
-      border-left: 10px solid #B6A99F;
+      border-left: 10px solid #C7C2BB;
       padding: 0 0 34px 20px;
       &:last-child { padding-bottom: 0; }
       &:hover {
@@ -119,7 +119,7 @@ header {
         position: absolute;
         width: 35px;
         height: 35px;
-        background: #B6A99F;
+        background: #C7C2BB;
         border-radius: 35px;
         left: -23px;
         top: -5px;
@@ -130,7 +130,7 @@ header {
         position: absolute;
         width: 23px;
         height: 23px;
-        background: #BD6C2F;
+        background: #BD5137;
         border-radius: 23px;
         left: -17px;
         top: 1px;
@@ -143,7 +143,7 @@ header {
 }
 
 .school-view {
-  background: #B6A99F;
+  background: #C7C2BB;
   color: #fff;
   margin: 0 -13px;
   padding: 0 24px;
