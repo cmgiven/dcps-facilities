@@ -1,1 +1,0 @@
-!function(){"use strict";var i,a;$(function(){i.initialize(),a.initialize()}),i={initialize:function(){$("#loading").fadeOut(),$("#main").fadeIn()}},window.app=i,a={initialize:function(){L.mapbox.accessToken="pk.eyJ1IjoiNjFxdWlzYmVydGgiLCJhIjoib1lsUTNsbyJ9.UZh_yfTjTscW-48eFaWCQQ",a=L.mapbox.map("map","examples.map-i86nkdio").setView([38.89,-77.03],12)}}}();
