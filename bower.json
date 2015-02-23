@@ -1,5 +1,5 @@
 {
-  "name": "at-risk",
+  "name": "dcps-facilities",
   "private": true,
   "dependencies": {
     "jquery": "~1.11.1",
