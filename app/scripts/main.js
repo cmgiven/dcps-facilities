@@ -7,7 +7,14 @@
 
     var app,
         map;
-
+    
+    var accessToken = "$MY_MAPBOX_ACCESS_TOKEN_HERE";
+	
+    //TODO: use config file
+    function getAccessToken()
+    {
+	return accessToken;
+    }
     $(function () {
         app.initialize();
         map.initialize();
@@ -23,7 +30,7 @@
     window.app = app;
     map = {
         initialize: function () {
-            L.mapbox.accessToken = 'pk.eyJ1IjoiNjFxdWlzYmVydGgiLCJhIjoib1lsUTNsbyJ9.UZh_yfTjTscW-48eFaWCQQ';
+            L.mapbox.accessToken = getAccessToken();
             map = L.mapbox.map('map', 'examples.map-i86nkdio').setView([38.89, -77.03], 12);
         }
     };
