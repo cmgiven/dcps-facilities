@@ -10,7 +10,6 @@
     
     var featureLayer;
     var accessToken = "$MY_MAPBOX_ACCESS_TOKEN_HERE";
-    var accessToken = "pk.eyJ1IjoiYmJyb3Rzb3MiLCJhIjoiNUZOQVBWSSJ9.oxGErG4MjBcoVH64nqIFHw";
 
 	
     //TODO: use config file
