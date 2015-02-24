@@ -10,6 +10,8 @@
     
     var featureLayer;
     var accessToken = "$MY_MAPBOX_ACCESS_TOKEN_HERE";
+    var accessToken = "pk.eyJ1IjoiYmJyb3Rzb3MiLCJhIjoiNUZOQVBWSSJ9.oxGErG4MjBcoVH64nqIFHw";
+
 	
     //TODO: use config file
     function getAccessToken()
@@ -32,7 +34,7 @@
     map = {
         initialize: function () {
             L.mapbox.accessToken = getAccessToken();
-            map = L.mapbox.map('map', 'examples.map-i86nkdio').setView([38.89, -77.03], 11);
+            map = L.mapbox.map('map', 'examples.map-i86nkdio').setView([38.89, -77.03], 12);
             
             //default to es layer
     		featureLayer = L.mapbox.featureLayer()
@@ -40,8 +42,20 @@
    	 			.addTo(map)
     			.on('click', clickOnGroup)
     			.on('mouseover', mouseOverOnGroup);
+    		
         }
     };
+    
+    function onEachFeature(feature, layer) {
+    	// does this feature have a property named popupContent?
+    	if (feature.properties && feature.properties.NAME) {
+     	   layer.bindPopup(feature.properties.NAME);
+   		}
+	}
+	
+	L.geoJson(featureLayer, {
+  		  onEachFeature: onEachFeature
+		}).addTo(map);
     
     function clickOnGroup(){
     	//TODO: change planning details here
