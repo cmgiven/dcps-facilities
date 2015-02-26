@@ -15,7 +15,7 @@
     //TODO: use config file
     function getAccessToken()
     {
-	return accessToken;
+		return accessToken;
     }
     $(function () {
         app.initialize();
@@ -35,27 +35,28 @@
             L.mapbox.accessToken = getAccessToken();
             map = L.mapbox.map('map', 'examples.map-i86nkdio').setView([38.89, -77.03], 12);
             
+            /*
+             $.getJSON(filename, function(school_json) {
+        	featureLayer = L.geoJson(school_json, { style: L.mapbox.simplestyle.style })
+        				   .on('click', clickOnGroup)
+    					   .on('mouseover', mouseOverOnGroup);
+  			featureLayer.addTo(map);
+			});
+			*/
+			
+			
+			//using mapbox api vs. using straight jquery
             //default to es layer
     		featureLayer = L.mapbox.featureLayer()
    	 			.loadURL('../data/es.json')
    	 			.addTo(map)
     			.on('click', clickOnGroup)
     			.on('mouseover', mouseOverOnGroup);
-    		
-        }
+        	}
+        	
     };
     
-    function onEachFeature(feature, layer) {
-    	// does this feature have a property named popupContent?
-    	if (feature.properties && feature.properties.NAME) {
-     	   layer.bindPopup(feature.properties.NAME);
-   		}
-	}
-	
-	L.geoJson(featureLayer, {
-  		  onEachFeature: onEachFeature
-		}).addTo(map);
-    
+   
     function clickOnGroup(){
     	//TODO: change planning details here
     	console.log('clicked on group');
