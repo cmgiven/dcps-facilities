@@ -104,9 +104,52 @@
     
     function onEachFeature(feature, layer) {
     	layer.on({
-     	    click: clickOnGroup
+     	    click: clickOnGroup,
+     	    mouseover: mousemove,
+     	    mouseout: mouseout
     	});    	    	
 	}
+	var closeTooltip;
+	var popup = new L.Popup({ autoPan: false });
+
+
+	function mousemove(e) {
+      var layer = e.target;
+      
+      var school = getSchool(layer.feature.properties.GIS_ID)
+      
+      var schoolEnrollment = ('estimatedEnrollment2015' in school) ? school.estimatedEnrollment2015 : 100;
+      var modernization = ('modernization' in school) ? school.modernization : "N/A";
+      var condition= ('condition2013' in school) ? school.condition2013 : "N/A";
+
+      
+      popup.setLatLng(e.latlng);
+      popup.setContent('<div class="marker-title">' + layer.feature.properties.title + 
+      					'</div> Enrollment: ' + schoolEnrollment +
+      					'<br/> Modernization: ' + modernization + 
+      					'<br/>Condition:' + condition );
+
+      if (!popup._map) popup.openOn(map);
+      window.clearTimeout(closeTooltip);
+
+      // highlight feature
+      layer.setStyle({
+          weight: 3,
+          opacity: 0.3,
+          fillOpacity: 0.9
+      });
+
+      if (!L.Browser.ie && !L.Browser.opera) {
+          layer.bringToFront();
+      }
+  }
+
+  function mouseout(e) {
+      featureLayer.resetStyle(e.target);
+      closeTooltip = window.setTimeout(function() {
+          map.closePopup();
+      }, 100);
+  }
     function clickOnGroup(e){
     	var layer = e.target;
     	showSchool(layer.feature.properties.GIS_ID)
