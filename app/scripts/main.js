@@ -8,25 +8,40 @@
     var app,
         map;
     
-    var featureLayer;
+    
     var ELEMENTARY_GEOJSON_FILE = 'data/es.json';
     var MIDDLE_SCHOOL_GEOJSON_FILE = 'data/ms.json';
     var HIGH_SCHOOL_GEOJSON_FILE = 'data/hs.json';    
     var SCHOOL_DATA_FILE = 'data/schools.csv';
         
+    //TODO: encapsulate these in modules
     var accessToken = "$MY_MAPBOX_ACCESS_TOKEN_HERE";
+    var featureLayer;
+    var schoolData;
 	
     //TODO: use config file
     function getAccessToken()
     {
 		return accessToken;
     }
+    
     $(function () {
-        app.initialize();
+        d3.csv(SCHOOL_DATA_FILE, function (d) {
+            return {
+                name: d.name,
+                code: d.code,
+                estimatedEnrollment2015: d.sy15_estenroll_total,
+                modernization: d.modernization,
+                modernizationStatus: d.mod_status,
+                condition2013: d.facilitiesconditionindex_2013
+            };
+        },
+        app.initialize);
     });
 
     app = {
         initialize: function (data) {
+            schoolData = data;
             $('#loading').fadeOut();
             $('#main').fadeIn();
             map.initialize();
