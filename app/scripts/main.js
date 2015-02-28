@@ -71,31 +71,8 @@
           opacity: 0.1,
           color: 'black',
           fillOpacity: 0.7,
-          //fillColor: getColorByEnrollment(feature.properties.GIS_ID)
           fillColor: getColorByCondition(feature.properties.GIS_ID)
       };
-  	}
-  	
-  	
-  	//Example off of leaflet howtTo, might be useful in the future
-  	function getColorByEnrollment(d) {
-  	  var school = getSchool(d);
-  	  
-  	  if (school != null){
-  	  	d = ('estimatedEnrollment2015' in school) ? school.estimatedEnrollment2015 : 100;
-  	  }
-  	  else{
-  	  	d = 200;
-  	  }
-  	
-      return d > 1000 ? '#8c2d04' :
-          d > 500  ? '#cc4c02' :
-          d > 200  ? '#ec7014' :
-          d > 100  ? '#fe9929' :
-          d > 50   ? '#fec44f' :
-          d > 20   ? '#fee391' :
-          d > 10   ? '#fff7bc' :
-          '#ffffe5';
   	}
   	
   	//TODO: Put all colors in CSS
@@ -172,11 +149,14 @@
    			geoJsonLayerFile = HIGH_SCHOOL_GEOJSON_FILE;
    		}
    		
-        featureLayer = L.mapbox.featureLayer()
-   	 			.loadURL(geoJsonLayerFile)
-   	 			.addTo(map)
-   	 			.on('click', clickOnGroup)
-    			.on('mouseover', mouseOverOnGroup);
+        $.getJSON(geoJsonLayerFile, function(school_json) {
+            	featureLayer = L.geoJson(school_json, { 
+            		style: getStyle, 
+            		onEachFeature: onEachFeature
+            	});
+  				featureLayer.addTo(map);
+		   });
+   		
     	});
 	});
 
