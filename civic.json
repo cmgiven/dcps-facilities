@@ -5,16 +5,20 @@
     {
         "twitter": "@codefordc"
     },
-    "bornAt": "Code for DC",
+    "bornAt": "Open Data Day 2015, Code for DC",
     "geography": "DC",
     "politicalEntity": {"DCPS":"http://dcps.dc.gov/"},
     "type": "Web App",
     "needs": [
         {"need":"Javascript"},
+        {"need":"Leaflet"},
+        {"need":"Mapbox"},
+        {"need":"JQuery"},
         {"need":"Spreadsheet Experts"}
     ],
     "categories": [
         {"category":"Education"},
         {"category":"Government"}
-    ]
+    ],
+    "moreInfo": "https://opendatadaydc.hackpad.com/l1eM7PP4lzb?eid=Fyye5349OBg"
 }
