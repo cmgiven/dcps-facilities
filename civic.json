@@ -1,0 +1,20 @@
+{
+    "conformsTo": "http://codefordc.org/resources/specification.html",
+    "status": "Alpha",
+    "contact":
+    {
+        "twitter": "@codefordc"
+    },
+    "bornAt": "Code for DC",
+    "geography": "DC",
+    "politicalEntity": {"DCPS":"http://dcps.dc.gov/"},
+    "type": "Web App",
+    "needs": [
+        {"need":"Javascript"},
+        {"need":"Spreadsheet Experts"}
+    ],
+    "categories": [
+        {"category":"Education"},
+        {"category":"Government"}
+    ]
+}
