@@ -55,33 +55,44 @@
             map = L.mapbox.map('map', 'examples.map-i86nkdio').setView([38.89, -77.03], 12);
             map.options.minZoom = 11;
 
-            /* JQuery way to load without mapbox
-             $.getJSON(filename, function(school_json) {
-        	featureLayer = L.geoJson(school_json, { style: L.mapbox.simplestyle.style })
-        				   .on('click', clickOnGroup)
-    					   .on('mouseover', mouseOverOnGroup);
-  			featureLayer.addTo(map);
+            $.getJSON(ELEMENTARY_GEOJSON_FILE, function(school_json) {
+            	featureLayer = L.geoJson(school_json, { 
+            		onEachFeature: onEachFeature
+            	});
+  				featureLayer.addTo(map);
 			});
-			*/
-			
-			//using mapbox api vs. using straight jquery
-            //default to es layer
-    		featureLayer = L.mapbox.featureLayer()
-   	 			.loadURL(ELEMENTARY_GEOJSON_FILE)
-   	 			.addTo(map)
-    			.on('click', clickOnGroup)
-    			.on('mouseover', mouseOverOnGroup);
         }
     };
     
-    function clickOnGroup(){
-    	//TODO: change planning details here
-    	console.log('clicked on group');
+    function onEachFeature(feature, layer) {
+    	layer.on({
+     	    click: clickOnGroup
+    	});    	    	
+	}
+    function clickOnGroup(e){
+    	var layer = e.target;
+    	showSchool(layer.feature.properties.GIS_ID)
     }
     
-    function mouseOverOnGroup(){
-    	//TODO:add context for mouse over here
-    	console.log('mouse over on group');
+    function showSchool (gis_school_id){
+   		var schoolView = d3.select('#school-view');
+   		var school = getSchool(gis_school_id);
+   		schoolView.selectAll('.field.enrollment.amount').text(school.estimatedEnrollment2015);
+        schoolView.selectAll('.field.schoolname').text(school.name);
+        schoolView.selectAll('.field.modernization.code').text(school.modernization);
+        schoolView.selectAll('.field.modernization.status').text(school.modernizationStatus);
+    }
+    
+    function getSchool(GIS_ID){
+    	var gis_school_split = GIS_ID.split('_');
+    	var gis_school_code = gis_school_split[1];
+    	
+    	for (var school_key in schoolData){
+            var school = schoolData[school_key];
+            if (school.code == gis_school_code){
+              return school;
+            }
+        }
     }
     
     $(document).ready(function(){
