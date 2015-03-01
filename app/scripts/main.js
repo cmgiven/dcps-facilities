@@ -6,7 +6,9 @@
     'use strict';
 
     var app,
-        map;
+        map,
+        mapModule,
+        schoolModule;
     
     
     var ELEMENTARY_GEOJSON_FILE = 'data/es.json';
@@ -44,162 +46,198 @@
             schoolData = data;
             $('#loading').fadeOut();
             $('#main').fadeIn();
-            map.initialize();
+            mapModule.initialize();
         }
     };
 
     window.app = app;
-    map = {
-        initialize: function () {
-            L.mapbox.accessToken = getAccessToken();
+    
+   
+    mapModule = (function() {
+	    
+	    var closeTooltip;
+	    var popup = new L.Popup({ autoPan: false });
+    	
+    	function initialize(){
+    	 	L.mapbox.accessToken = getAccessToken();
             map = L.mapbox.map('map', 'examples.map-i86nkdio').setView([38.89, -77.03], 12);
             map.options.minZoom = 11;
+            setSchoolLayer('es');
+        };
+        
+        function onEachFeature(feature, layer){
+         	layer.on({
+     	   	 click: clickOnGroup,
+     	   	 mouseover: mousemove,
+     	   	 mouseout: mouseout
+    		});  
+         };
+         
+         function getStyle (feature){
+        	 return {
+         		weight: 2,
+         	 	opacity: 0.1,
+          		color: 'black',
+          		fillOpacity: 0.7,
+          		fillColor: schoolModule.getSchoolConditionColor(feature.properties.GIS_ID)
+     	 	};
+     	 };
+     	 
+     	 function clickOnGroup(e){
+    		var layer = e.target;
+    		schoolModule.showSchool(layer.feature.properties.GIS_ID)
+    	 }; 
+     	 
+		function mousemove(e) {
+      		var layer = e.target;
+      		popup.setLatLng(e.latlng);
+		    popup.setContent(schoolModule.showPopupContent(layer.feature.properties.GIS_ID));
 
-            $.getJSON(ELEMENTARY_GEOJSON_FILE, function(school_json) {
+      		if (!popup._map) popup.openOn(map);
+      			window.clearTimeout(closeTooltip);
+
+      		layer.setStyle({
+          		weight: 3,
+          		opacity: 0.3,
+          		fillOpacity: 0.9
+      		});
+
+      		if (!L.Browser.ie && !L.Browser.opera) {
+          		layer.bringToFront();
+      		}
+  		};
+
+  		function mouseout(e) {
+    		featureLayer.resetStyle(e.target);
+     	 	closeTooltip = window.setTimeout(function() {
+      	    map.closePopup();
+      		}, 100);
+  		};
+        
+        function setSchoolLayer(schoolTypeCode){
+       		if (map.hasLayer(featureLayer)){
+         		map.removeLayer(featureLayer);
+         	}   		
+   			
+   			var geoJsonLayerFileName = schoolModule.getSchoolGeoJson(schoolTypeCode);
+   			
+   			$.getJSON(geoJsonLayerFileName, function(school_json) {
             	featureLayer = L.geoJson(school_json, { 
             		style: getStyle,
             		onEachFeature: onEachFeature
             	});
   				featureLayer.addTo(map);
 			});
+        };
+        
+        return{
+        	initialize:initialize,
+        	setSchoolLayer: function(schoolTypeCode){
+        		setSchoolLayer(schoolTypeCode);	
+        	}
         }
-    };
+        
+    }());
     
-    function getStyle(feature) {
-      return {
-          weight: 2,
-          opacity: 0.1,
-          color: 'black',
-          fillOpacity: 0.7,
-          fillColor: getColorByCondition(feature.properties.GIS_ID)
-      };
-  	}
-  	
-  	//TODO: Put all colors in CSS
-    function getColorByCondition(d) {
-  	  var school = getSchool(d);
-  	  
-  	  if (school != null){
-  	  	d = ('condition2013' in school) ? school.condition2013 : "TBD";
-  	  }
-  	  else{
-  	  	d = "TBD";
-  	  }
-
-  	  if (d == "Good"){
-  	  	return '#66CC00';
-  	  }
-  	  else if ((d == "Poor") || (d == "Unsatisfactory")){
-  	  	return '#FF0000';
-  	  }
-  	  else if (d == "Fair"){
-  	  	return '#8c2d04';
-  	  }  	
-  
-  	  else{
-  	  	return '#fff7bc';
-  	  }
-     
-  }
     
-    function onEachFeature(feature, layer) {
-    	layer.on({
-     	    click: clickOnGroup,
-     	    mouseover: mousemove,
-     	    mouseout: mouseout
-    	});    	    	
-	}
-	var closeTooltip;
-	var popup = new L.Popup({ autoPan: false });
-
-
-	function mousemove(e) {
-      var layer = e.target;
-      
-      var school = getSchool(layer.feature.properties.GIS_ID)
-      
-      var schoolEnrollment = ('estimatedEnrollment2015' in school) ? school.estimatedEnrollment2015 : 100;
-      var modernization = ('modernization' in school) ? school.modernization : "N/A";
-      var condition= ('condition2013' in school) ? school.condition2013 : "N/A";
-
-      
-      popup.setLatLng(e.latlng);
-      popup.setContent('<div class="marker-title">' + layer.feature.properties.title + 
-      					'</div> Enrollment: ' + schoolEnrollment +
-      					'<br/> Modernization: ' + modernization + 
-      					'<br/>Condition:' + condition );
-
-      if (!popup._map) popup.openOn(map);
-      window.clearTimeout(closeTooltip);
-
-      // highlight feature
-      layer.setStyle({
-          weight: 3,
-          opacity: 0.3,
-          fillOpacity: 0.9
-      });
-
-      if (!L.Browser.ie && !L.Browser.opera) {
-          layer.bringToFront();
-      }
-  }
-
-  function mouseout(e) {
-      featureLayer.resetStyle(e.target);
-      closeTooltip = window.setTimeout(function() {
-          map.closePopup();
-      }, 100);
-  }
-    function clickOnGroup(e){
-    	var layer = e.target;
-    	showSchool(layer.feature.properties.GIS_ID)
-    }
-    
-    function showSchool (gis_school_id){
-   		var schoolView = d3.select('#school-view');
-   		var school = getSchool(gis_school_id);
-   		schoolView.selectAll('.field.enrollment.amount').text(school.estimatedEnrollment2015);
-        schoolView.selectAll('.field.schoolname').text(school.name);
-        schoolView.selectAll('.field.modernization.code').text(school.modernization);
-        schoolView.selectAll('.field.modernization.status').text(school.modernizationStatus);
-    }
-    
-    function getSchool(GIS_ID){
-    	var gis_school_split = GIS_ID.split('_');
-    	var gis_school_code = gis_school_split[1];
+    schoolModule = (function() {
+    	function showSchool (gis_school_id){
+   			var schoolView = d3.select('#school-view');
+   			var school = getSchool(gis_school_id);
+   			schoolView.selectAll('.field.enrollment.amount').text(school.estimatedEnrollment2015);
+        	schoolView.selectAll('.field.schoolname').text(school.name);
+        	schoolView.selectAll('.field.modernization.code').text(school.modernization);
+       		schoolView.selectAll('.field.modernization.status').text(school.modernizationStatus);
+    	};
     	
-    	for (var school_key in schoolData){
-            var school = schoolData[school_key];
-            if (school.code == gis_school_code){
-              return school;
-            }
-        }
-    }
+    	function getSchool(GIS_ID){
+    		var gis_school_split = GIS_ID.split('_');
+    		var gis_school_code = gis_school_split[1];
+    	
+    		for (var school_key in schoolData){
+            	var school = schoolData[school_key];
+            		if (school.code == gis_school_code){
+              			return school;
+            		}
+        		}
+    	};
+    	
+    	function getSchoolGeoJson(schoolTypeCode)
+    	{
+    		if (schoolTypeCode == 'es'){
+   				return ELEMENTARY_GEOJSON_FILE;
+   			}
+   			else if (schoolTypeCode == 'ms'){
+   				return MIDDLE_SCHOOL_GEOJSON_FILE;
+   			}
+   			else if (schoolTypeCode== 'hs'){
+   				return HIGH_SCHOOL_GEOJSON_FILE;
+   			}
+   			else{
+   				return ELEMENTARY_GEOJSON_FILE;
+			}
+		}
+    	
+    	function getSchoolConditionColor (gis_school_id){
+    		var school = getSchool(gis_school_id)
+    		var schoolCondition;
+    		if (school != null){
+  	  			schoolCondition = ('condition2013' in school) ? school.condition2013 : "TBD";
+  	  		}
+  	 		else{
+  	  			schoolCondition = "TBD";
+  	  		}
+
+  	  		if (schoolCondition == "Good"){
+  	  			return '#66CC00';
+  	  		}
+  	  		else if ((schoolCondition == "Poor") || (schoolCondition == "Unsatisfactory")){
+  	  			return '#FF0000';
+  	  		}
+  	 		else if (schoolCondition == "Fair"){
+  	  			return '#8c2d04';
+  	  		}  	
+  	 		else{
+  	  			return '#fff7bc';
+  	  		}
+    	}
+    	
+    	function showPopupContent(gis_school_id){
+    		var school = getSchool(gis_school_id);
+    		
+    		var schoolEnrollment = ('estimatedEnrollment2015' in school) ? school.estimatedEnrollment2015 : 100;
+      		var modernization = ('modernization' in school) ? school.modernization : "N/A";
+      		var condition= ('condition2013' in school) ? school.condition2013 : "N/A";
+      		
+
+    		return '<div class="marker-title">' + school.name + 
+      				'</div> Enrollment: ' + schoolEnrollment +
+      				'<br/> Modernization: ' + modernization + 
+      				'<br/>Condition:' + condition;
+    	}
+    	
+    	return {
+    		showSchool:function(gis_school_id){
+    			showSchool(gis_school_id);
+    		},
+    		getSchoolConditionColor:function(gis_school_id){
+    			return getSchoolConditionColor(gis_school_id);
+    		}, 
+    		getSchoolGeoJson:function(schoolTypeCode){
+    			return getSchoolGeoJson(schoolTypeCode);
+    		},
+    		showPopupContent:function(schoolTypeCode){
+    			return showPopupContent(schoolTypeCode);
+    		}
+    	};
+    
+    }());
+    
     
     $(document).ready(function(){
    	 $('input[type=radio]').click(function(){
-   	    //remove old layer
-   		map.removeLayer(featureLayer);   		
-   		
-   		var geoJsonLayerFile;
-   		if (this.value == 'es'){
-   			geoJsonLayerFile = ELEMENTARY_GEOJSON_FILE;
-   		}
-   		else if (this.value == 'ms'){
-   			geoJsonLayerFile = MIDDLE_SCHOOL_GEOJSON_FILE;
-   		}
-   		else if (this.value == 'hs'){
-   			geoJsonLayerFile = HIGH_SCHOOL_GEOJSON_FILE;
-   		}
-   		
-        $.getJSON(geoJsonLayerFile, function(school_json) {
-            	featureLayer = L.geoJson(school_json, { 
-            		style: getStyle, 
-            		onEachFeature: onEachFeature
-            	});
-  				featureLayer.addTo(map);
-		   });
-   		
+   	    mapModule.setSchoolLayer(this.value);
+   	    
     	});
 	});
 
