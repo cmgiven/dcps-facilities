@@ -6,7 +6,6 @@
     'use strict';
 
     var app,
-        map,
         mapModule,
         schoolModule;
     
@@ -15,10 +14,30 @@
     var MIDDLE_SCHOOL_GEOJSON_FILE = 'data/ms.json';
     var HIGH_SCHOOL_GEOJSON_FILE = 'data/hs.json';    
     var SCHOOL_DATA_FILE = 'data/schools.csv';
+    
+    //TODO: Add these to CSS? 
+    var SCHOOL_CONDITION_FAIR_COLOR = '#8c2d04';
+    var SCHOOL_CONDITION_GOOD_COLOR = '#66CC00';
+    var SCHOOL_CONDITION_POOR_COLOR = '#FF0000';
+    var SCHOOL_CONDITION_DEFAULT_COLOR = '#FFF7BC';
+    
+    var LAYER_STYLE = {
+    			weight: 3,
+          		opacity: 0.3,
+          		fillOpacity: 0.9
+    };
+    
+    var FEATURE_STYLE = {
+         		weight: 2,
+         	 	opacity: 0.1,
+          		color: 'black',
+          		fillOpacity: 0.7,
+    };
+    
         
-    //TODO: encapsulate these in modules
     var accessToken = "$MY_MAPBOX_ACCESS_TOKEN_HERE";
-    var featureLayer;
+    
+    //TODO: encapsulate in schoolModule
     var schoolData;
 	
     //TODO: use config file
@@ -55,6 +74,7 @@
    
     mapModule = (function() {
 	    
+	    var featureLayer;
 	    var closeTooltip;
 	    var popup = new L.Popup({ autoPan: false });
     	
@@ -74,13 +94,9 @@
          };
          
          function getStyle (feature){
-        	 return {
-         		weight: 2,
-         	 	opacity: 0.1,
-          		color: 'black',
-          		fillOpacity: 0.7,
-          		fillColor: schoolModule.getSchoolConditionColor(feature.properties.GIS_ID)
-     	 	};
+        	 var style = FEATURE_STYLE;
+        	 style.fillColor = schoolModule.getSchoolConditionColor(feature.properties.GIS_ID);
+        	 return style;
      	 };
      	 
      	 function clickOnGroup(e){
@@ -96,11 +112,7 @@
       		if (!popup._map) popup.openOn(map);
       			window.clearTimeout(closeTooltip);
 
-      		layer.setStyle({
-          		weight: 3,
-          		opacity: 0.3,
-          		fillOpacity: 0.9
-      		});
+      		layer.setStyle(LAYER_STYLE);      		
 
       		if (!L.Browser.ie && !L.Browser.opera) {
           		layer.bringToFront();
@@ -179,6 +191,7 @@
 		}
     	
     	function getSchoolConditionColor (gis_school_id){
+    	
     		var school = getSchool(gis_school_id)
     		var schoolCondition;
     		if (school != null){
@@ -189,16 +202,16 @@
   	  		}
 
   	  		if (schoolCondition == "Good"){
-  	  			return '#66CC00';
+  	  			return SCHOOL_CONDITION_GOOD_COLOR;
   	  		}
   	  		else if ((schoolCondition == "Poor") || (schoolCondition == "Unsatisfactory")){
-  	  			return '#FF0000';
+  	  			return SCHOOL_CONDITION_POOR_COLOR;
   	  		}
   	 		else if (schoolCondition == "Fair"){
-  	  			return '#8c2d04';
+  	  			return SCHOOL_CONDITION_FAIR_COLOR;
   	  		}  	
   	 		else{
-  	  			return '#fff7bc';
+  	  			return SCHOOL_CONDITION_DEFAULT_COLOR;
   	  		}
     	}
     	
