@@ -21,7 +21,7 @@
     var SCHOOL_CONDITION_POOR_COLOR = '#FF0000';
     var SCHOOL_CONDITION_DEFAULT_COLOR = '#FFF7BC';
     
-    var LAYER_STYLE = {
+    var LAYER_HIGHLIGHT_STYLE = {
     			weight: 3,
           		opacity: 0.3,
           		fillOpacity: 0.9
@@ -77,10 +77,11 @@
 	    var featureLayer;
 	    var closeTooltip;
 	    var popup = new L.Popup({ autoPan: false });
+	    var featureLayerSchoolType;
     	
     	function initialize(){
     	 	L.mapbox.accessToken = getAccessToken();
-            map = L.mapbox.map('map', 'examples.map-i86nkdio').setView([38.89, -77.03], 12);
+            map = L.mapbox.map('map', 'examples.map-i86nkdio').setView([38.89, -77.03], 11);
             map.options.minZoom = 11;
             setSchoolLayer('es');
         };
@@ -93,9 +94,28 @@
     		});  
          };
          
-         function getStyle (feature){
+         function getPlannedStyle (feature){
+        	 var style;
+        	 
+        	 //TODO: Optimize me
+        	 var plannedIndicator = schoolModule.getSchoolPlanned(feature.properties.GIS_ID);
+
+        	 if (plannedIndicator){
+        	 	style = LAYER_HIGHLIGHT_STYLE;
+        	 	console.log("Found me");
+        	 }
+        	 else{
+        	 	style = FEATURE_STYLE;
+			 }
+        	 style.fillColor = schoolModule.getSchoolConditionColor(feature.properties.GIS_ID);
+
+        	 return style;
+     	 };
+     	 
+     	  function getStyle (feature){
         	 var style = FEATURE_STYLE;
         	 style.fillColor = schoolModule.getSchoolConditionColor(feature.properties.GIS_ID);
+        	 
         	 return style;
      	 };
      	 
@@ -112,7 +132,7 @@
       		if (!popup._map) popup.openOn(map);
       			window.clearTimeout(closeTooltip);
 
-      		layer.setStyle(LAYER_STYLE);      		
+      		layer.setStyle(LAYER_HIGHLIGHT_STYLE);      		
 
       		if (!L.Browser.ie && !L.Browser.opera) {
           		layer.bringToFront();
@@ -130,6 +150,7 @@
        		if (map.hasLayer(featureLayer)){
          		map.removeLayer(featureLayer);
          	}   		
+   			featureLayerSchoolType = schoolTypeCode;
    			
    			var geoJsonLayerFileName = schoolModule.getSchoolGeoJson(schoolTypeCode);
    			
@@ -142,11 +163,28 @@
 			});
         };
         
+        function showPlans(){
+        	if (map.hasLayer(featureLayer)){
+         		map.removeLayer(featureLayer);
+         	}   		
+         	
+        	var geoJsonLayerFileName = schoolModule.getSchoolGeoJson(featureLayerSchoolType);
+        	$.getJSON(geoJsonLayerFileName, function(school_json) {
+            	featureLayer = L.geoJson(school_json, { 
+            		style: getPlannedStyle,
+            		onEachFeature: onEachFeature
+            	});
+  				featureLayer.addTo(map);
+			});
+        	
+        };
+        
         return{
         	initialize:initialize,
         	setSchoolLayer: function(schoolTypeCode){
         		setSchoolLayer(schoolTypeCode);	
-        	}
+        	},
+        	showPlans:showPlans
         }
         
     }());
@@ -215,6 +253,25 @@
   	  		}
     	}
     	
+    	function getSchoolPlanned(gis_school_id){
+    	
+    		var school = getSchool(gis_school_id)
+    		var schoolPlan;
+    		if (school != null){
+  	  			schoolPlan = ('modernizationStatus' in school) ? school.modernizationStatus : "Not Planned";
+  	  		}
+  	 		else{
+  	  			schoolPlan = "Not Planned";
+  	  		}
+
+			if (schoolPlan == "planned"){
+				return true;
+			}
+  	  		else {
+  	  			return false;
+  	  		}
+    	}
+    	
     	function showPopupContent(gis_school_id){
     		var school = getSchool(gis_school_id);
     		
@@ -241,7 +298,10 @@
     		},
     		showPopupContent:function(schoolTypeCode){
     			return showPopupContent(schoolTypeCode);
-    		}
+    		},
+    		getSchoolPlanned:function(gis_school_id){
+    			return getSchoolPlanned(gis_school_id);
+    		} 
     	};
     
     }());
@@ -249,8 +309,13 @@
     
     $(document).ready(function(){
    	 $('input[type=radio]').click(function(){
-   	    mapModule.setSchoolLayer(this.value);
-   	    
+   	    if (this.value == 'es' || this.value == 'ms' || this.value == 'hs'){
+ 	  	    mapModule.setSchoolLayer(this.value);
+   		}  
+   		else if (this.value == 'planned'){
+   			mapModule.showPlans();
+   		}
+   		  
     	});
 	});
 
