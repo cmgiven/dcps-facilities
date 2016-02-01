@@ -1,24 +1,34 @@
 {
-    "conformsTo": "http://codefordc.org/resources/specification.html",
-    "status": "Alpha",
-    "contact":
-    {
-        "twitter": "@codefordc"
-    },
-    "bornAt": "Open Data Day 2015, Code for DC",
-    "geography": "DC",
-    "politicalEntity": {"DCPS":"http://dcps.dc.gov/"},
-    "type": "Web App",
-    "needs": [
-        {"need":"Javascript"},
-        {"need":"Leaflet"},
-        {"need":"Mapbox"},
-        {"need":"JQuery"},
-        {"need":"Spreadsheet Experts"}
-    ],
-    "categories": [
-        {"category":"Education"},
-        {"category":"Government"}
-    ],
-    "moreInfo": "https://opendatadaydc.hackpad.com/l1eM7PP4lzb?eid=Fyye5349OBg"
+    "name": "DCPS Facility Conditions", 
+    "description": "Mapping the condition of DC Public Schools facilities", 
+    "license": "GPL-2.0", 
+    "status": "Alpha", 
+    "type": "Web App", 
+    "homepage": "", 
+    "repository": "https://github.com/cmgiven/dcps-facilities", 
+    "thumbnail": "", 
+    "geography": [
+        "DC"
+    ], 
+    "contact": {
+        "name": "", 
+        "email": "", 
+        "url": "https://twitter.com/@codefordc"
+    }, 
+    "partners": [
+        {
+            "url": "http://codefordc.org", 
+            "name": "Code for DC", 
+            "email": ""
+        }
+    ], 
+    "data": [], 
+    "tags": [
+        "Education", 
+        "Government"
+    ], 
+    "links": [
+        "https://opendatadaydc.hackpad.com/l1eM7PP4lzb?eid=Fyye5349OBg"
+    ], 
+    "id": "https://raw.githubusercontent.com/DCgov/civic.json/master/schemas/schema-v1.json"
 }
